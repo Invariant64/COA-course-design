@@ -13,6 +13,7 @@ module controller (
 );
 
     wire r_type, addu, subu, ori, lw, sw, beq, lui, j;
+    wire addi, addiu, slt, jal, jr;
     wire w_addu, w_subu, w_or, w_lui; // alu_ctl
 
     assign r_type = (opcode == 6'b000000);
@@ -25,6 +26,12 @@ module controller (
     assign lw = (opcode == 6'b100011);
     assign sw = (opcode == 6'b101011);
     assign lui = (opcode == 6'b001111);
+
+    assign addi = (opcode == 6'b001000);
+    assign addiu = (opcode == 6'b001001);
+    assign slt = (opcode == 6'b101010);
+    assign jal = (opcode == 6'b000011);
+    assign jr = (opcode == 6'b001000);
 
     // alu_ctl : 2'b00 = addu, 2'b01 = subu, 2'b10 = or, 2'b11 = lui
     assign w_addu = addu || lw || sw;
