@@ -5,12 +5,15 @@ module mips (
 
     wire [1:0] alu_ctl;
     wire ext_op;
-    wire mem_to_reg;
+    wire [1:0] reg_src;
     wire npc_sel;
     wire mem_write;
     wire reg_write;
     wire alu_src;
-    wire reg_dst;
+    wire [1:0] reg_dst;
+    wire j_ctl;
+    wire overflow;
+    wire positive;
 
     wire [5:0] opcode;
     wire [5:0] funct;
@@ -20,14 +23,17 @@ module mips (
         .rst(rst),
         .alu_ctl(alu_ctl),
         .ext_op(ext_op),
-        .mem_to_reg(mem_to_reg),
+        .reg_src(reg_src),
         .npc_sel(npc_sel),
         .mem_write(mem_write),
         .reg_write(reg_write),
         .alu_src(alu_src),
         .reg_dst(reg_dst),
         .opcode(opcode),
-        .funct(funct)
+        .funct(funct),
+        .j_ctl(j_ctl),
+        .overflow(overflow),
+        .positive(positive)
     );
 
     controller controller_1(
@@ -35,12 +41,15 @@ module mips (
         .funct(funct),
         .alu_ctl(alu_ctl),
         .ext_op(ext_op),
-        .mem_to_reg(mem_to_reg),
+        .reg_src(reg_src),
         .npc_sel(npc_sel),
         .mem_write(mem_write),
         .reg_write(reg_write),
         .alu_src(alu_src),
-        .reg_dst(reg_dst)
+        .reg_dst(reg_dst),
+        .j_ctl(j_ctl),
+        .overflow(overflow),
+        .positive(positive)
     );
 
 endmodule

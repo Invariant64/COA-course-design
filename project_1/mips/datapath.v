@@ -4,13 +4,15 @@ module datapath (
 
     input [1:0] alu_ctl,
     input ext_op,
-    input mem_to_reg,
+    input [1:0] reg_src,
     input npc_sel,
     input mem_write,
     input reg_write,
     input alu_src,
-    input reg_dst,
-
+    input [1:0] reg_dst,
+    input j_ctl,
+    
+    output overflow, positive,
     output [5:0] opcode,
     output [5:0] funct
 );
@@ -24,7 +26,8 @@ module datapath (
         .reset(rst),
         .npc_sel(npc_sel),
         .zero(w_zero), 
-        .insout(w_ins)
+        .insout(w_ins),
+        .j_ctl(j_ctl)
     );
 
     assign opcode = w_ins[31:26];
@@ -35,6 +38,8 @@ module datapath (
         .A(w_reg_data1),
         .B(w_alu_b_src),
         .zero(w_zero),
+        .overflow(overflow),
+        .positive(positive),
         .C(w_C)
     );
 
@@ -57,8 +62,12 @@ module datapath (
         .data2(w_reg_data2)
     );
 
-    assign w_reg_write_src = (reg_dst == 1'b0) ? w_ins[20:16] : w_ins[15:11];
-    assign w_reg_src = (mem_to_reg == 1'b0) ? w_C : w_dm_data;
+    assign w_reg_write_src = (reg_dst == 2'b00) ? w_ins[20:16] : 
+                             (reg_dst == 2'b01) ? w_ins[15:11] :
+                             (reg_dst == 2'b10) ? 5'b11110 : 5'b00000;
+    assign w_reg_src = (reg_src == 2'b00) ? w_C : 
+                       (reg_src == 2'b01) ? w_dm_data:
+                       (reg_src == 2'b10) ? 32'b1 : 32'b0;
     
     dm_1k dm_1(
         .addr(w_C[9:0]),

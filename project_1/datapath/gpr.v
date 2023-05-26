@@ -12,10 +12,20 @@ module gpr (
     assign data1 = rgs[read1];
     assign data2 = rgs[read2];
 
+    integer i;
+
+    initial begin
+        for (i = 0; i < 32; i = i + 1)
+        begin
+            rgs[i] = 32'h00000000;
+        end
+    end
+
     always @ (posedge clk)
     begin
         if (wd) begin
-            rgs[write] <= write_data;
+            if (write != 5'b0) 
+                rgs[write] <= write_data;
         end
     end
 

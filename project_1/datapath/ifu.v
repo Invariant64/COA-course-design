@@ -3,11 +3,13 @@ module ifu (
     input reset,
     input npc_sel,
     input zero,
+    input j_ctl,
 
     output [31:0] insout
 );
 
     reg [31:0] pc;
+    wire j;
     wire [31:0] pcnew, t2, t1, t0;
     wire [15:0] imm;
 
@@ -22,7 +24,7 @@ module ifu (
         else pc = pcnew;
     end
 
-    assign pcnew = (npc_sel == 1'b1) ? ((zero == 1'b1) ? t1 : t2) : t0;
+    assign pcnew = (npc_sel && j_ctl) ? t2 : (npc_sel && zero) ? t1 : t0;
      
     assign imm = insout[15:0];
     assign t0 = pc + 4;
