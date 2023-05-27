@@ -12,6 +12,7 @@ module mips (
     wire alu_src;
     wire [1:0] reg_dst;
     wire j_ctl;
+    wire jr_ctl;
     wire overflow;
     wire positive;
 
@@ -33,7 +34,8 @@ module mips (
         .funct(funct),
         .j_ctl(j_ctl),
         .overflow(overflow),
-        .positive(positive)
+        .positive(positive),
+        .jr_ctl(jr_ctl)
     );
 
     controller controller_1(
@@ -49,7 +51,8 @@ module mips (
         .reg_dst(reg_dst),
         .j_ctl(j_ctl),
         .overflow(overflow),
-        .positive(positive)
+        .positive(positive),
+        .jr_ctl(jr_ctl)
     );
 
 endmodule

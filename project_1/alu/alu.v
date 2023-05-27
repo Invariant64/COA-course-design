@@ -12,8 +12,7 @@ module alu (
                (alu_ctl == 2'b11) ? {B[15:0], 16'b0} : 32'b0;
 
     assign zero = (C == 32'b0);
-    assign positive = (C[31] == 0) && !zero;
-    assign overflow = (alu_ctl == 2'b00) ? (A[31] == B[31] && C[31] != A[31]) : 1'b0;
-           
+    assign positive = (C[31] == 1'b0) && !zero;
+    assign overflow = (alu_ctl == 2'b00) ? (A[31] == B[31] && C[31] != A[31]) : 1'b0;     
 
 endmodule

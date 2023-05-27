@@ -11,7 +11,8 @@ module controller (
     output reg_write,
     output alu_src,
     output [1:0] reg_dst,
-    output j_ctl
+    output j_ctl,
+    output jr_ctl
 );
 
     wire overflow;
@@ -25,6 +26,7 @@ module controller (
     assign addu = r_type && (funct == 6'b100001);
     assign subu = r_type && (funct == 6'b100011);
     assign slt = r_type && (funct == 6'b101010);
+    assign jr = r_type && (funct == 6'b001000);
     
     assign ori = (opcode == 6'b001101);
     assign beq = (opcode == 6'b000100);
@@ -36,34 +38,27 @@ module controller (
     assign addi = (opcode == 6'b001000);
     assign addiu = (opcode == 6'b001001);
     assign jal = (opcode == 6'b000011);
-    assign jr = (opcode == 6'b001000);
 
     // alu_ctl : 2'b00 = addu, 2'b01 = subu, 2'b10 = or, 2'b11 = lui
-    assign w_add = addu || lw || sw || addi || addiu;
+    assign w_add = addu || lw || sw || addi || addiu || jal || jr;
     assign w_sub = subu || beq || slt;
     assign w_or = ori;
     assign w_lui = lui;
-    assign alu_ctl[0] = w_sub || w_lui;
-    assign alu_ctl[1] = w_or || w_lui;
-
-    assign ext_op = lw || sw || addi || addiu;
-
-    assign reg_src[0] = lw || slt && positive;
-    assign reg_src[1] = overflow && w_overflow_ctl || slt;
-
-    assign npc_sel = beq || j;
-
-    assign mem_write = sw;
-
-    assign reg_write = addu || subu || ori || lui || lw || addi || addiu || slt;
-
-    assign alu_src = ori || lui || lw || sw || addi || addiu;
-
-    assign reg_dst[0] = addu || subu || slt; // 0 = rt, 1 = rd
-    assign reg_dst[1] = overflow && w_overflow_ctl;
-
-    assign j_ctl = j;
-
     assign w_overflow_ctl = addi;
+
+    assign alu_ctl[0] = w_sub || w_lui;
+    assign alu_ctl[1] = w_or || w_lui; // 00 = addu, 01 = subu, 10 = or, 11 = lui
+    assign ext_op = lw || sw || addi || addiu;
+    assign reg_src[0] = lw || slt && !positive || jal;
+    assign reg_src[1] = overflow && w_overflow_ctl || slt || jal;
+    assign npc_sel = beq || j || jal;
+    assign mem_write = sw;
+    assign reg_write = addu || subu || ori || lui || lw || addi || addiu || slt || jal;
+    assign alu_src = ori || lui || lw || sw || addi || addiu;
+    assign reg_dst[0] = addu || subu || slt || jal; 
+    assign reg_dst[1] = overflow && w_overflow_ctl || jal; // 00 = rt, 01 = rd, 10 = 1, 11 = 31
+    assign j_ctl = j || jal;
+    assign jr_ctl = jr;
+
 
 endmodule
