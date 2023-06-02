@@ -1,3 +1,5 @@
+`include "im.v"
+
 module ifu (
     input clk,
     input reset,

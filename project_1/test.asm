@@ -9,4 +9,7 @@ ori $3, $0, 0x6666
 j end1
 funct1:ori $3, $0, 0x1234
 jr $31
+ori $3, $0, 0x5678
+jal funct1
+ori $3, $0, 0x9999
 end1:

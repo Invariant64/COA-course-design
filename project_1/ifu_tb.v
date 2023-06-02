@@ -8,9 +8,9 @@ module ifu_tb;
     wire [31:0] insout;
     wire [15:0] imm;
 
-    IFU ifu(clk, reset, npc_sel, zero, jctl, insout);
-    assign pc = ifu.pc;
-    assign imm = ifu.imm;
+    ifu ifu1(clk, reset, npc_sel, zero, jctl, insout);
+    assign pc = ifu1.pc;
+    assign imm = ifu1.imm;
 
     initial begin
         $dumpfile("wave.vcd");        //生成的vcd文件名称

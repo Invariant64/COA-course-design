@@ -1,3 +1,9 @@
+`include "alu.v"
+`include "ext.v"
+`include "gpr.v"
+`include "dm.v"
+`include "ifu.v"
+
 module datapath (
     input clk,
     input rst,

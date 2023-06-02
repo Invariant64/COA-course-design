@@ -1,3 +1,6 @@
+`include "controller.v"
+`include "datapath.v"
+
 module mips (
     input clk,
     input rst
