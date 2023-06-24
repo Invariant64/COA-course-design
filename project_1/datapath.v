@@ -10,7 +10,7 @@ module datapath (
 
     input [1:0] alu_ctl,
     input ext_op,
-    input [1:0] reg_src,
+    input [2:0] reg_src,
     input npc_sel,
     input mem_write,
     input reg_write,
@@ -75,9 +75,10 @@ module datapath (
     assign w_reg_write_src = (reg_dst == 2'b00) ? w_ins[20:16] : 
                              (reg_dst == 2'b01) ? w_ins[15:11] :
                              (reg_dst == 2'b10) ? 5'b11110 : 5'b11111;
-    assign w_reg_src = (reg_src == 2'b00) ? w_C : 
-                       (reg_src == 2'b01) ? w_dm_data:
-                       (reg_src == 2'b10) ? 32'b1 : w_npc;
+    assign w_reg_src = (reg_src == 3'b000) ? w_C : 
+                       (reg_src == 3'b001) ? w_dm_data:
+                       (reg_src == 3'b010) ? 32'b0 :
+                       (reg_src == 3'b011) ? 32'b1 : w_npc;
     
     dm_1k dm_1(
         .addr(w_C[9:0]),
