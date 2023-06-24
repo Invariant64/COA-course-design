@@ -1,5 +1,5 @@
 `include "controller.v"
-`include "datapath.v"
+`include "datapath1.v"
 
 module mips (
     input clk,
@@ -8,7 +8,7 @@ module mips (
 
     wire [1:0] alu_ctl;
     wire ext_op;
-    wire [1:0] reg_src;
+    wire [2:0] reg_src;
     wire npc_sel;
     wire mem_write;
     wire reg_write;
