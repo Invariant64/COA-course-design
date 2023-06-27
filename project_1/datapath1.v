@@ -19,8 +19,9 @@ module datapath (
     input [1:0] reg_dst,
     input j_ctl,
     input jr_ctl,
+    input bltzal,
     
-    output overflow, positive,
+    output overflow, positive, zero,
     output [5:0] opcode,
     output [5:0] funct
 );
@@ -28,6 +29,7 @@ module datapath (
     wire w_zero;
     wire [4:0] w_reg_write_src;
     wire [31:0] w_ins, w_C, w_ext_data, w_reg_src, w_reg_data1, w_reg_data2, w_dm_data, w_alu_b_src, w_npc;
+    wire bltzal;
     
     ifu ifu_1(
         .clk(clk),
@@ -38,9 +40,12 @@ module datapath (
         .j_ctl(j_ctl),
         .jr_ctl(jr_ctl),
         .npc(w_npc),
-        .rs_data(w_reg_data1)
+        .rs_data(w_reg_data1),
+        .bltzal(bltzal),
+        .positive(positive)
     );
 
+    assign zero = w_zero;
     assign opcode = w_ins[31:26];
     assign funct = w_ins[5:0];
 

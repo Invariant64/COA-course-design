@@ -5,8 +5,10 @@ module ifu (
     input reset,
     input npc_sel,
     input zero,
+    input positive,
     input j_ctl,
     input jr_ctl,
+    input bltzal,
 
     input [31:0] rs_data,
 
@@ -31,7 +33,7 @@ module ifu (
 
     assign pcnew = (npc_sel && jr_ctl) ? rs_data : 
                    (npc_sel && j_ctl) ? t2 : 
-                   (npc_sel && zero) ? t1 : npc;
+                   (npc_sel && zero && !bltzal || npc_sel && bltzal && !positive && !zero) ? t1 : npc;
      
     assign imm = insout[15:0];
     assign npc = pc + 4;

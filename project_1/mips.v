@@ -18,6 +18,8 @@ module mips (
     wire jr_ctl;
     wire overflow;
     wire positive;
+    wire bltzal;
+    wire zero;
 
     wire [5:0] opcode;
     wire [5:0] funct;
@@ -38,7 +40,9 @@ module mips (
         .j_ctl(j_ctl),
         .overflow(overflow),
         .positive(positive),
-        .jr_ctl(jr_ctl)
+        .jr_ctl(jr_ctl),
+        .bltzal(bltzal),
+        .zero(zero)
     );
 
     controller controller_1(
@@ -55,7 +59,9 @@ module mips (
         .j_ctl(j_ctl),
         .overflow(overflow),
         .positive(positive),
-        .jr_ctl(jr_ctl)
+        .jr_ctl(jr_ctl),
+        .bltzal(bltzal),
+        .zero(zero)
     );
 
 endmodule

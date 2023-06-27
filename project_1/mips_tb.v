@@ -45,7 +45,7 @@ module mips_tb;
     assign zero = mips_1.datapath_1.alu_1.zero;
     assign positive = mips_1.datapath_1.alu_1.positive;
     assign pc = mips_1.datapath_1.ifu_1.pc;
-    assign overflow = mips_1.datapath_1.alu_1.overflow;
+    assign overflow = mips_1.datapath_1.alu_1.overflow && mips_1.datapath_1.controller_1.w_overflow_ctl;
 
     mips mips_1(
         .clk(clk),
@@ -56,7 +56,7 @@ module mips_tb;
         clk = 1'b0;
         #5 rst = 1'b1;
         #5 rst = 1'b0;
-        $readmemh("p1-test-code.txt", mips_1.datapath_1.ifu_1.i1.im);
+        $readmemh("code1.txt", mips_1.datapath_1.ifu_1.i1.im);
 
         $dumpfile("wave.vcd");        //生成的vcd文件名称
         $dumpvars(0, mips_tb);    //tb模块名称

@@ -1,7 +1,7 @@
 module controller (
     input [5:0] opcode,
     input [5:0] funct,
-    input overflow, positive,
+    input overflow, positive, zero,
     
     output [1:0] alu_ctl,
     output ext_op,
@@ -12,7 +12,8 @@ module controller (
     output alu_src,
     output [1:0] reg_dst,
     output j_ctl,
-    output jr_ctl
+    output jr_ctl,
+    output bltzal
 );
 
     wire overflow;
@@ -39,6 +40,8 @@ module controller (
     assign addiu = (opcode == 6'b001001);
     assign jal = (opcode == 6'b000011);
 
+    assign bltzal = (opcode == 6'b000001);
+
     // alu_ctl : 2'b00 = addu, 2'b01 = subu, 2'b10 = or, 2'b11 = lui
     assign w_add = addu || lw || sw || addi || addiu || jal || jr;
     assign w_sub = subu || beq || slt;
@@ -51,13 +54,13 @@ module controller (
     assign ext_op = lw || sw || addi || addiu;
     assign reg_src[0] = lw || slt && !positive || overflow && w_overflow_ctl;
     assign reg_src[1] = overflow && w_overflow_ctl || slt;
-    assign reg_src[2] = jal; // 000 = alu, 001 = mem, 010 = 0, 011 = 1, 100 = pc
-    assign npc_sel = beq || j || jal || jr;
+    assign reg_src[2] = jal || bltzal; // 000 = alu, 001 = mem, 010 = 0, 011 = 1, 100 = pc
+    assign npc_sel = beq || j || jal || jr || bltzal;
     assign mem_write = sw;
-    assign reg_write = addu || subu || ori || lui || lw || addi || addiu || slt || jal;
+    assign reg_write = addu || subu || ori || lui || lw || addi || addiu || slt || jal || bltzal && !positive && !zero;
     assign alu_src = ori || lui || lw || sw || addi || addiu;
-    assign reg_dst[0] = addu || subu || slt || jal; 
-    assign reg_dst[1] = overflow && w_overflow_ctl || jal; // 00 = rt, 01 = rd, 10 = 30, 11 = 31
+    assign reg_dst[0] = addu || subu || slt || jal || bltzal; 
+    assign reg_dst[1] = overflow && w_overflow_ctl || jal || bltzal; // 00 = rt, 01 = rd, 10 = 30, 11 = 31
     assign j_ctl = j || jal;
     assign jr_ctl = jr;
 
