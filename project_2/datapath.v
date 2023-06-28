@@ -35,6 +35,7 @@ module datapath (
     wire [4:0] w_reg_write_src;
     wire [31:0] w_ins, w_C, w_ext_data, w_reg_src, w_reg_data1, w_reg_data2, w_dm_data, w_alu_b_src, w_npc;
     wire [31:0] h_mem_in, h_mem_out, h_gpr_in, h_gpr_out;
+    reg [31:0] w_sra_data;
 
     always @ (posedge clk, posedge rst) begin
         if (rst) begin
@@ -50,6 +51,19 @@ module datapath (
             rgs_data = h_gpr_in;
         end
     end
+
+    //assign w_sra_data = {{(w_ins[10:6]){rgs_A[31]}}, rgs_A[31:(w_ins[10:6])]};
+    integer i, j;
+    always @ (posedge clk) begin
+        j = w_ins[10:6];
+        for (i = 0; i < 31 - j; i = i + 1) begin
+            w_sra_data[i] = rgs_B[i + j];
+        end
+        for (i = 0; i < j; i = i + 1) begin
+            w_sra_data[31 - i] = rgs_B[31];
+        end
+    end
+    // assign w_sra_data = rgs_A >> w_ins[10:6];
     
     ifu ifu_1(
         .clk(clk),
@@ -104,7 +118,8 @@ module datapath (
                        (reg_src == `REG_WRITE_SRC_MEM) ? rgs_data :
                        (reg_src == `REG_WRITE_SRC_ZERO) ? 32'b0 :
                        (reg_src == `REG_WRITE_SRC_ONE) ? 32'b1 :
-                       (reg_src == `REG_WRITE_SRC_PC) ? w_npc : 32'b0;
+                       (reg_src == `REG_WRITE_SRC_PC) ? w_npc : 
+                       (reg_src == `REG_WRITE_SRC_SRA) ? w_sra_data :32'b0;
 
     assign h_gpr_out = rgs_B;
 

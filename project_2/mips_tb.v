@@ -17,6 +17,11 @@ module mips_tb;
     wire [31:0] aluout;
     wire [15:0] imm;
     wire signed_less;
+    wire [31:0] w_sra_data;
+    wire [4:0] shamt;
+
+    assign shamt = mips_1.datapath_1.w_ins[10:6];
+    assign w_sra_data = mips_1.datapath_1.w_sra_data;
 
     assign signed_less = mips_1.datapath_1.alu_1.signed_less;
     assign imm = mips_1.datapath_1.ifu_1.imm;
@@ -66,7 +71,7 @@ module mips_tb;
     assign zero = mips_1.datapath_1.alu_1.zero;
     assign positive = mips_1.datapath_1.alu_1.positive;
     assign pc = mips_1.datapath_1.ifu_1.pc;
-    assign overflow = mips_1.datapath_1.alu_1.overflow;
+    assign overflow = mips_1.datapath_1.alu_1.overflow && mips_1.datapath_1.controller_1.addi;
 
     mips mips_1(
         .clk(clk),
@@ -75,7 +80,7 @@ module mips_tb;
 
     initial begin
         clk = 1'b1;
-        $readmemh("p2-test-code.txt", mips_1.datapath_1.ifu_1.i1.im);
+        $readmemh("code.txt", mips_1.datapath_1.ifu_1.i1.im);
         #5 rst = 1'b0;
         #5 rst = 1'b1;
         #5 rst = 1'b0;

@@ -42,6 +42,7 @@ module controller (
     assign jal = (opcode == 6'b000011);
     assign lb = (opcode == 6'b100000);
     assign sb = (opcode == 6'b101000);
+    assign sra = r_type && (funct == 6'b000011);
 
     // control signals
     always @ (*) begin 
@@ -56,16 +57,17 @@ module controller (
             S1 : begin // decode
                 pc_write = 1'b0;
                 rgs_ins_write = 1'b0;
-                alu_ctl = (addu || lw || sw || addi || addiu) ? `ALU_OP_ADD : 
+                alu_ctl = (addu || lw || sw || addi || addiu || lb || sb) ? `ALU_OP_ADD : 
                           (subu || beq || slt) ? `ALU_OP_SUB : 
                           (ori) ? `ALU_OP_OR : 
                           (lui) ? `ALU_OP_LUI : 0;
                 ext_op = (lw || sw || addi || addiu || lb || sb) ? `EXT_SIGN : `EXT_ZERO;
                 alu_src = (lw || sw || ori || lui || addi || addiu || lb || sb) ? `ALU_SRC_EXT : `ALU_SRC_REG; 
                 reg_src = (addu || subu || ori || lui || addiu) ? `REG_WRITE_SRC_ALU : 
-                          (lw || lb ) ? `REG_WRITE_SRC_MEM :
-                          (jal) ? `REG_WRITE_SRC_PC : 0;
-                reg_dst = (addu || subu || slt) ? `REG_WRITE_ADDR_RD :
+                          (lw || lb) ? `REG_WRITE_SRC_MEM :
+                          (jal) ? `REG_WRITE_SRC_PC : 
+                          (sra) ? `REG_WRITE_SRC_SRA : 0;
+                reg_dst = (addu || subu || slt || sra) ? `REG_WRITE_ADDR_RD :
                           (ori || lui || lw || addiu || lb) ? `REG_WRITE_ADDR_RT :
                           (jal) ? `REG_WRITE_ADDR_NPC : 0;
                 npc_sel = (beq) ? `NPC_SEL_RELATIVE :
@@ -102,6 +104,7 @@ module controller (
                     if (signed_less) reg_src = `REG_WRITE_SRC_ONE;
                     else reg_src = `REG_WRITE_SRC_ZERO;
                 end
+                if (sra) reg_src = `REG_WRITE_SRC_SRA;
             end
             S8 : begin // branch
                 pc_write = zero;
@@ -123,7 +126,7 @@ module controller (
                 end
                 S1 : begin // decode
                     if (lw || sw || lb || sb) state = S2;
-                    else if (addu || subu || ori || lui || addiu || addi || slt) state = S6;
+                    else if (addu || subu || ori || lui || addiu || addi || slt || sra) state = S6;
                     else if (beq) state = S8;
                     else if (jal || j || jr) state = S9;
                     else state = S0;
