@@ -80,7 +80,7 @@ module mips_tb;
 
     initial begin
         clk = 1'b1;
-        $readmemh("code.txt", mips_1.datapath_1.ifu_1.i1.im);
+        $readmemh("p2-test-code.txt", mips_1.datapath_1.ifu_1.i1.im);
         #5 rst = 1'b0;
         #5 rst = 1'b1;
         #5 rst = 1'b0;

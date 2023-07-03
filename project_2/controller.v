@@ -160,20 +160,5 @@ module controller (
         end
     end
 
-    // assign alu_ctl[0] = w_sub || w_lui;
-    // assign alu_ctl[1] = w_or || w_lui; // 00 = addu, 01 = subu, 10 = or, 11 = lui
-    // assign ext_op = lw || sw || addi || addiu;
-    // assign reg_src[0] = lw || slt && !positive || w_overflow && w_overflow_ctl;
-    // assign reg_src[1] = w_overflow && w_overflow_ctl || slt;
-    // assign reg_src[2] = jal; // 000 = alu, 001 = mem, 010 = 0, 011 = 1, 100 = pc
-    // assign npc_sel = beq || j || jal || jr;
-    // assign mem_write = sw;
-    // assign reg_write = addu || subu || ori || lui || lw || addi || addiu || slt || jal;
-    // assign alu_src = ori || lui || lw || sw || addi || addiu;
-    // assign reg_dst[0] = addu || subu || slt || jal; 
-    // assign reg_dst[1] = w_overflow && w_overflow_ctl || jal; // 00 = rt, 01 = rd, 10 = 30, 11 = 31
-    // assign j_ctl = j || jal;
-    // assign jr_ctl = jr;
-
 
 endmodule
