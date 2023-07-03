@@ -56,7 +56,7 @@ module mips_tb;
         clk = 1'b0;
         #5 rst = 1'b1;
         #5 rst = 1'b0;
-        $readmemh("code1.txt", mips_1.datapath_1.ifu_1.i1.im);
+        $readmemh("p1-test-code.txt", mips_1.datapath_1.ifu_1.i1.im);
 
         $dumpfile("wave.vcd");        //生成的vcd文件名称
         $dumpvars(0, mips_tb);    //tb模块名称
