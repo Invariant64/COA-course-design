@@ -4,6 +4,11 @@ then
     exit
 fi
 
+if [ ! -d ./.output ];
+then
+    mkdir ./.output
+fi
+
 if [ ! -f ./$1.v ];
 then
     echo $1.v "doesn't existed!"
